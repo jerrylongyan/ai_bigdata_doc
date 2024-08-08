@@ -1,7 +1,5 @@
 
 
-> 视频地址：
-
 ### 一、OpenAI prompt经验准则参考
 
 参考：[Best practices for prompt engineering with the OpenAI API | OpenAI Help Center](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)
