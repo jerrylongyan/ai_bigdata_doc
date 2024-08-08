@@ -1,12 +1,18 @@
-### 一、OpenAI认为效果不错的提示格式（但请随意探索不同的格式，以更好地适应您的任务）
 
-1. 使用最新的模型
+
+> 视频地址：
+
+### 一、OpenAI prompt经验准则参考
+
+参考：[Best practices for prompt engineering with the OpenAI API | OpenAI Help Center](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)
+
+##### 1. 使用最新的模型
 
 ```
 GPT-3，GPT-3.5，GPT-3.5-turbo，GPT-4，GPT-4-turbo，GPT-4o，GPT-4o-mini
 ```
 
-2. 把指令放在提示的开头并且用###或"""来分隔指令和上下文
+##### 2. 把指令放在提示的开头并且用###或"""来分隔指令和上下文
 
 低效的❌：
 
@@ -25,7 +31,7 @@ GPT-3，GPT-3.5，GPT-3.5-turbo，GPT-4，GPT-4-turbo，GPT-4o，GPT-4o-mini
 """
 ```
 
-3. 尽可能具体地，详细地描述预期的背景、结果、长度、格式、风格等
+##### 3. 尽可能具体地，详细地描述预期的背景、结果、长度、格式、风格等
 
 低效的❌：
 
@@ -39,7 +45,7 @@ GPT-3，GPT-3.5，GPT-3.5-turbo，GPT-4，GPT-4-turbo，GPT-4o，GPT-4o-mini
 以{某著名诗人}的风格写一首关于OpenAI的鼓舞人心的小诗，重点关注最近的DALL-E产品发布(DALL-E是一个文本到图像的ML模型)。
 ```
 
-4. 通过示例阐明所需的输出格式
+##### 4. 通过示例阐明所需的输出格式
 
 低效的❌：
 
@@ -63,9 +69,9 @@ GPT-3，GPT-3.5，GPT-3.5-turbo，GPT-4，GPT-4-turbo，GPT-4o，GPT-4o-mini
 文本：{文本}
 ```
 
-5. 从零样本开始，然后少样本，如果都不起作用就做微调
+##### 5. 从零样本开始，然后少样本，如果都不起作用就做微调
 
-零样本✔️：
+零样本（0-shot）✔️：
 
 ```plain
 从下面的文本中提取关键字。
@@ -75,7 +81,7 @@ GPT-3，GPT-3.5，GPT-3.5-turbo，GPT-4，GPT-4-turbo，GPT-4o，GPT-4o-mini
 关键字：
 ```
 
-少样本✔️：
+少样本（few-shot）✔️：
 
 ```plain
 从下面的文本中提取关键字。
@@ -88,7 +94,7 @@ GPT-3，GPT-3.5，GPT-3.5-turbo，GPT-4，GPT-4-turbo，GPT-4o，GPT-4o-mini
 文本：{文本}
 ```
 
-6. 减少空洞的和不精确的描述
+##### 6. 减少空洞的和不精确的描述
 
 低效的❌：
 
@@ -102,7 +108,7 @@ GPT-3，GPT-3.5，GPT-3.5-turbo，GPT-4，GPT-4-turbo，GPT-4o，GPT-4o-mini
 请用3到5句话来描述这个产品
 ```
 
-7. 不要只告诉他不做什么，还要告诉他要做什么
+##### 7. 不要只告诉他不做什么，还要告诉他要做什么
 
 低效的❌：
 
@@ -122,7 +128,7 @@ Agent：
 Agent：
 ```
 
-8. 对于代码生成任务——使用“引导词”将模型推向特定的模式
+##### 8. 对于代码生成任务——使用“引导词”将模型推向特定的模式
 
 低效的❌：
 
@@ -142,9 +148,65 @@ Agent：
 import
 ```
 
-参考：[Best practices for prompt engineering with the OpenAI API | OpenAI Help Center](https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api)
+### 二 更多经验准则
 
+##### 9. CoT思维链
 
+<img src="../pics/CoT_paper_pic.png" alt="CoT_paper_pic" style="zoom:65%;" />
 
-### 二
+论文参考：[Chain-of-Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/pdf/2201.11903)
+
+###### CoT实现方式1：以咒语方式提示模型：“让我们分步骤思考”，“Let's think step by step”
+
+###### CoT实现方式2：通过在小样本中以分步骤思考并解决问题的方式提示模型
+
+##### 10. 结构化提示模版
+
+将信息分门别类的清晰的给出来，阅读理解题 VS 配对题
+
+低效的❌：
+
+```plain
+写一部面向小学三年级学生标题为小芋头的幸福生活的千字左右微型小说，故事要完整，精彩动人，用词优美，善用比喻拟人等修辞手法。小说的主人公有小芋头，小芋头爸爸和妈妈，数学王老师，朋友小馒头。故事讲述了小芋头开学第一天裤子穿反了的糗事。
+```
+
+更好的✔️：
+
+```plain
+写一部微型小说。
+-读者：小学三年级学生
+-标题：小芋头的幸福生活
+-主人公：小芋头，小芋头爸爸和妈妈，数学王老师，朋友小馒头
+-故事概要：小芋头的开学第一天的糗事——裤子穿反了。
+-要求：一千字左右，故事完整，精彩动人，用词优美，善用比喻拟人等修辞手法。
+```
+
+### 三 万能prompt模式
+
+``````plain
+RGBR = Role（角色）+ Goal（目标）+ Background（背景）+ Requirement（要求）
+``````
+
+改写前❌：
+
+```plain
+写一部面向小学三年级学生标题为小芋头的幸福生活的千字左右微型小说，故事要完整，精彩动人，用词优美，善用比喻拟人等修辞手法。小说的主人公有小芋头，小芋头爸爸和妈妈，数学王老师，朋友小馒头。故事讲述了小芋头开学第一天裤子穿反了的糗事。
+```
+
+改写后✔️：
+
+```plain
+-Role：你是一名出色的微型小说作家，特别擅长撰写小学生题材的小说。
+-Goal：请写一部题为《小芋头的幸福生活》的微型小说
+-Background: 
+	-读者：小学三年级学生
+    -主人公：小芋头，小芋头爸爸和妈妈，数学王老师，朋友小馒头
+    -故事概要：小芋头的开学第一天的糗事——裤子穿反了。
+-Requirement:
+    -一千字左右
+    -故事完整，精彩动人
+    -用词优美，善用比喻拟人等修辞手法。
+```
+
+#### 总结：不复杂问题清晰无歧义描述，复杂问题参考10个prompt准则（特别是少样本和CoT）和RGBR模式。也可借助kimi+等prompt工具。
 
